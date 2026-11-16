@@ -1,0 +1,42 @@
+/* Brief interaction feedback; CSS only, no timers or animation dependencies. */
+@media (prefers-reduced-motion: no-preference){
+  :root:not(.reduced) :is(.primary,.secondary,.danger,.category-button,.text-button,.settings-link,.palette-row,.saving-link,.back,.close,.month button,.segmented button){
+    transition:transform 150ms ease,background-color 150ms ease;
+  }
+  :root:not(.reduced) :is(.primary,.secondary,.danger,.category-button,.text-button,.settings-link,.palette-row,.saving-link,.back,.close,.month button,.segmented button):not(:disabled):active{
+    transform:translateY(2px);
+  }
+  :root:not(.reduced) nav a.active>.pixel{
+    transform-origin:center;
+    animation:bolso-tab-pop 220ms ease-out;
+  }
+  :root:not(.reduced) dialog[open]{
+    animation:bolso-dialog-in 180ms ease-out;
+  }
+  :root:not(.reduced) .category-bar-fill{
+    transform-origin:left center;
+    animation:bolso-bar-in 260ms cubic-bezier(.2,.7,.3,1);
+  }
+}
+@keyframes bolso-tab-pop{
+  0%{transform:translateY(2px) scale(.95)}
+  55%{transform:translateY(-2px) scale(1.05)}
+  100%{transform:translateY(0) scale(1)}
+}
+@keyframes bolso-dialog-in{
+  from{transform:translateY(4px);opacity:.92}
+  to{transform:translateY(0);opacity:1}
+}
+@keyframes bolso-bar-in{
+  from{transform:scaleX(.04)}
+  to{transform:scaleX(1)}
+}
+/* A live preference change also stops an animation already running. */
+.reduced :is(.primary,.secondary,.danger,.category-button,.text-button,.settings-link,.palette-row,.saving-link,.back,.close,.month button,.segmented button,nav a.active>.pixel,dialog[open],.category-bar-fill){
+  animation:none!important;
+  transition:none!important;
+  transform:none!important;
+}
+@media (prefers-reduced-motion:reduce){
+  nav a.active>.pixel,dialog[open],.category-bar-fill{animation:none!important;transform:none!important}
+}

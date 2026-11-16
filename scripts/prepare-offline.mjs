@@ -1,0 +1,11 @@
+import {readFile,writeFile} from 'node:fs/promises';
+const directory = new URL('../dist/', import.meta.url);
+const html = await readFile(new URL('index.html',directory),'utf8');
+const build = html.match(/name="bolso-build" content="(\d+)"/)?.[1];
+if (!build || !html.includes('id="main"') || !html.includes('app.js?v='+build)) throw new Error('Incomplete offline application shell');
+const path = new URL('sw.js',directory);
+const worker = await readFile(path,'utf8');
+if (!worker.includes("bolso-shell-v"+build+"'")) throw new Error('Cache and HTML build versions differ');
+const marker = /\/\* OFFLINE_SHELL_START \*\/[\s\S]*?\/\* OFFLINE_SHELL_END \*\//;
+if (!marker.test(worker)) throw new Error('Offline shell marker is missing');
+await writeFile(path,worker.replace(marker,()=>'/* OFFLINE_SHELL_START */\nconst OFFLINE_HTML = '+JSON.stringify(html)+';\n/* OFFLINE_SHELL_END */\n'),'utf8');
